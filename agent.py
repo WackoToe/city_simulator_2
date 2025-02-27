@@ -1,15 +1,19 @@
 import numpy as np
 class Agent:
     def __init__(self, home_pos, work_pos, everyday_work_hours):
-        """Inizializza l'agente con una posizione nella matrice."""
+        # Initialize the agent's position and status
         self.home = (home_pos[0], home_pos[1])
-        self.x, self.y = self.home[0], self.home[1]
         self.to_home = False
 
         self.workplace = (work_pos[0], work_pos[1])
+        self.to_work = True
+
         self.everyday_work_hours = everyday_work_hours
         self.today_work_hours = everyday_work_hours
-        self.to_work = True
+
+        self.sleeping = False
+
+        self.x, self.y = self.home[0], self.home[1]
 
     def walk(self, direction):
         if direction[0] is not 0:

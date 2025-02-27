@@ -1,6 +1,9 @@
 import numpy as np
 from agent import Agent
+from city import City
 from utils import generate_random_position
+
+from colorama import init
 
 def setup_agents(rows, cols, pop_num):
     agents = []
@@ -11,18 +14,21 @@ def setup_agents(rows, cols, pop_num):
         agents.append(Agent(home_pos, work_pos, work_hours))
     return agents
 
-def generate_matrix(rows, cols, population):
-    city_matrix = np.zeros((rows, cols), dtype=int)  # Matrice di zeri
-    for i, agent in enumerate(population):
-        city_matrix[agent.home[0]][agent.home[1]] += 1
-    return city_matrix
+
 
 def setup_stations():
     return
 
 def init_function(rows, cols, pop_num):
+    # Inizializza Colorama (necessario per Windows)
+    init(autoreset=True)
+
+    # Initialize the population
     population = setup_agents(rows, cols, pop_num)
+
+    # Initialize the stations. Empty now!
     setup_stations()
     
-    city_matrix = generate_matrix(rows, cols, population)
-    return city_matrix, population
+    # Initialize the city matrix
+    city = City(rows, cols, population)
+    return city
