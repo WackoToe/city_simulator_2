@@ -1,15 +1,17 @@
 import numpy as np
 class Agent:
-    def __init__(self, home_pos, work_pos, everyday_work_hours):
+    def __init__(self, world_time, home_pos, work_pos, everyday_work_hours):
         # Initialize the agent's position and status
+        self.world_time = world_time
         self.home = (home_pos[0], home_pos[1])
-        self.to_home = False
+        self.to_home = True
 
         self.workplace = (work_pos[0], work_pos[1])
-        self.to_work = True
+        self.work_time_start = 8
+        self.work_time_end = 17
+        self.to_work = False
 
         self.everyday_work_hours = everyday_work_hours
-        self.today_work_hours = everyday_work_hours
 
         self.sleeping = False
 
@@ -29,21 +31,21 @@ class Agent:
 
     def decision(self):
         if self.x == self.workplace[0] and self.y == self.workplace[1]:
-            if self.today_work_hours != 0:
-                self.today_work_hours -= 1
-                return 0, 0
-            else:
-                self.to_work = not self.to_work
-                self.to_home = not self.to_home
-                self.today_work_hours = self.everyday_work_hours
+            if self.world_time.get_time() == self.work_time_end:
+                self.to_work = False
+                self.to_home = True
+        elif self.x == self.home[0] and self.y == self.home[1]:
+            if self.world_time.get_time() == self.work_time_start:
+                self.to_home = False
+                self.to_work = True
 
         if self.to_work:
             dx, dy = self.walk((self.workplace[0] - self.x, self.workplace[1] - self.y))
         elif self.to_home:
             dx, dy = self.walk((self.home[0] - self.x, self.home[1] - self.y))
-            if dx == 0 and dy == 0:
-                self.to_home = not self.to_home
-                self.to_work = not self.to_work
+            # if dx == 0 and dy == 0:
+            #     self.to_home = not self.to_home
+            #     self.to_work = not self.to_work
         return dx, dy
 
     def move(self, dx, dy, max_x, max_y):

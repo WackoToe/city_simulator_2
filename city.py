@@ -1,10 +1,11 @@
+import csv
 import numpy as np
 
 from colorama import Fore, Style
 
 class City:
-    def __init__(self, rows, cols, population):
-        self.time = 8
+    def __init__(self, world_time, rows, cols, population):
+        self.world_time = world_time
         self.rows = rows
         self.cols = cols
         self.population = population
@@ -15,11 +16,6 @@ class City:
         for i, agent in enumerate(self.population):
             city_matrix[agent.home[0]][agent.home[1]] += 1
         return city_matrix
-    
-    def check_new_day(self):
-        if self.time == 24:
-            self.time = 0
-        return
 
     def update_city(self):
         new_city_matrix = np.zeros((self.rows, self.cols), dtype=int)  # Matrice di zeri
@@ -29,12 +25,10 @@ class City:
             x, y = agent.get_position()
             new_city_matrix[x][y] += 1
         self.city_matrix = new_city_matrix
-        self.time += 1
-        self.check_new_day()
 
     def print_city_matrix(self):
         # First, we print the current time
-        print(Fore.CYAN + f"Time: {self.time}")
+        print(Fore.CYAN + f"Day: {self.world_time.get_day()}\tTime: {self.world_time.get_time()}")
 
         # Print the city mmatrix at every iteration
         homes = []
@@ -47,10 +41,20 @@ class City:
             for j, num in enumerate(row):
                 if (i, j) in homes:
                     color = Fore.GREEN
-                    print(color + str(num), end=" ")  # Stampa colorato
+                    print(color + str(num), end=" ")  # Print the number in green
                 elif (i, j) in workplaces:
                     color = Fore.RED
-                    print(color + str(num), end=" ")
+                    print(color + str(num), end=" ") # Print the number in red
                 else:
-                    print(str(num), end=" ")  # Stampa normale
-            print()  # Vai a capo dopo ogni riga
+                    print(str(num), end=" ")  # Print the number in white
+            print()  # new line
+
+    def save_city_matrix(self, filename="city_matrix.csv"):
+        # Saves all the instance attributes in a CSV file
+        attributes = vars(self)  # Obtain all the attributes of the instance
+
+        # Writes the attributes in a CSV file
+        with open(filename, mode="w", newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow(attributes.keys())  # Headers, attribute names
+            writer.writerow(attributes.values())  # Attribute values
