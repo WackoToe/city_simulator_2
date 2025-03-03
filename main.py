@@ -10,9 +10,9 @@ from utils import clear_screen
 def main():
     rows, cols = 8, 8  # City size
     refresh_rate = 1  # Seconds between each update
-    pop_num = 20   # Initial population
+    pop_num = 1   # Initial population
 
-    random.seed(22)
+    random.seed(42)
 
     world_time, city = init_function(rows, cols, pop_num)
 

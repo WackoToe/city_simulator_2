@@ -1,7 +1,7 @@
 import csv
 import numpy as np
 
-from colorama import Fore, Style
+from rich.console import Console
 
 class City:
     def __init__(self, world_time, rows, cols, population):
@@ -28,9 +28,15 @@ class City:
 
     def print_city_matrix(self):
         # First, we print the current time
-        print(Fore.CYAN + f"Day: {self.world_time.get_day()}\tTime: {self.world_time.get_time()}")
+        # print(Fore.CYAN + f"Day: {self.world_time.get_day()}\tTime: {self.world_time.get_time()}")
+        console = Console()
+        day_and_time_color = "ffb000"
+        home_color = "#648fff"
+        workplace_color = "#fe6100"
 
-        # Print the city mmatrix at every iteration
+        console.print("[{}]Day: {}\tTime: {}".format(day_and_time_color, self.world_time.get_day(), self.world_time.get_time()))
+
+        # Print the city matrix at every iteration
         homes = []
         workplaces = []
         for agent in self.population:
@@ -40,11 +46,9 @@ class City:
         for i, row in enumerate(self.city_matrix):
             for j, num in enumerate(row):
                 if (i, j) in homes:
-                    color = Fore.GREEN
-                    print(color + str(num), end=" ")  # Print the number in green
+                    console.print("[{}]{}".format(home_color, num), end=" ")
                 elif (i, j) in workplaces:
-                    color = Fore.RED
-                    print(color + str(num), end=" ") # Print the number in red
+                    console.print("[{}]{}".format(workplace_color, num), end=" ")
                 else:
                     print(str(num), end=" ")  # Print the number in white
             print()  # new line

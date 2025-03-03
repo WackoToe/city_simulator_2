@@ -1,6 +1,7 @@
 import numpy as np
+import random
 class Agent:
-    def __init__(self, world_time, home_pos, work_pos, everyday_work_hours):
+    def __init__(self, world_time, home_pos, work_pos, everyday_work_hours, got_car):
         # Initialize the agent's position and status
         self.world_time = world_time
         self.home = (home_pos[0], home_pos[1])
@@ -15,6 +16,9 @@ class Agent:
 
         self.sleeping = False
 
+        self.got_car = got_car
+        self.car_speed = 2
+
         self.x, self.y = self.home[0], self.home[1]
 
     def walk(self, direction):
@@ -28,21 +32,45 @@ class Agent:
             dx, dy = 0, 0
 
         return dx, dy
+    
+    def car(self, direction):
+        if np.abs(direction[0]) + np.abs(direction[1]) <= self.car_speed:
+            return direction[0], direction[1]
+        
+        if direction[0] == 0:
+            return 0, np.sign(direction[1])*self.car_speed
+        if direction[1] == 0:
+            return np.sign(direction[0])*self.car_speed, 0
+        
+        moves = [0 for i in range(np.abs(direction[0]))] + [1 for j in range(np.abs(direction[1]))]
+        selected_moves = random.sample(moves, self.car_speed)
+
+        dx = int(selected_moves.count(0)/np.sign(direction[0]))
+        dy = int(selected_moves.count(1)/np.sign(direction[1]))
+        return dx, dy
 
     def decision(self):
         if self.x == self.workplace[0] and self.y == self.workplace[1]:
             if self.world_time.get_time() == self.work_time_end:
                 self.to_work = False
                 self.to_home = True
+            else: return 0, 0
         elif self.x == self.home[0] and self.y == self.home[1]:
             if self.world_time.get_time() == self.work_time_start:
                 self.to_home = False
                 self.to_work = True
+            else: return 0, 0
 
         if self.to_work:
-            dx, dy = self.walk((self.workplace[0] - self.x, self.workplace[1] - self.y))
+            if self.got_car:
+                dx, dy = self.car((self.workplace[0] - self.x, self.workplace[1] - self.y))
+            else:
+                dx, dy = self.walk((self.workplace[0] - self.x, self.workplace[1] - self.y))
         elif self.to_home:
-            dx, dy = self.walk((self.home[0] - self.x, self.home[1] - self.y))
+            if self.got_car:
+                dx, dy = self.car((self.home[0] - self.x, self.home[1] - self.y))
+            else:
+                dx, dy = self.walk((self.home[0] - self.x, self.home[1] - self.y))
             # if dx == 0 and dy == 0:
             #     self.to_home = not self.to_home
             #     self.to_work = not self.to_work
