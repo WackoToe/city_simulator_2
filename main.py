@@ -8,13 +8,16 @@ from utils import clear_screen
 
 
 def main():
-    rows, cols = 8, 8  # City size
-    refresh_rate = 1  # Seconds between each update
-    pop_num = 1   # Initial population
+    rows, cols = 10, 10  # City size
+    refresh_rate = 0.5  # Seconds between each update
+    pop_num = 2   # Initial population
+    lines_num = 1  # Number of bus lines
 
-    random.seed(42)
+    # random.seed(22)
+    # random.seed(7)
+    random.seed(10)
 
-    world_time, city = init_function(rows, cols, pop_num)
+    world_time, city = init_function(rows, cols, pop_num, lines_num)
 
     while True:
         clear_screen()  # Clear the screen

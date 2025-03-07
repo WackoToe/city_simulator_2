@@ -1,6 +1,6 @@
 class World_Time():
     def __init__(self):
-        self.time = 6
+        self.time = 6.0
         self.day = 0
 
     def get_day(self):
@@ -10,7 +10,7 @@ class World_Time():
         return self.time
     
     def update_time(self):
-        self.time += 1
+        self.time += 0.5
         self.check_new_day()
         return
     

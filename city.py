@@ -4,11 +4,12 @@ import numpy as np
 from rich.console import Console
 
 class City:
-    def __init__(self, world_time, rows, cols, population):
+    def __init__(self, world_time, rows, cols, population, public_transport):
         self.world_time = world_time
         self.rows = rows
         self.cols = cols
         self.population = population
+        self.public_transport = public_transport
         self.city_matrix = self.generate_matrix()
 
     def generate_matrix(self):
@@ -33,15 +34,23 @@ class City:
         day_and_time_color = "ffb000"
         home_color = "#648fff"
         workplace_color = "#fe6100"
+        metro_stations_color = "#ff006e"
 
         console.print("[{}]Day: {}\tTime: {}".format(day_and_time_color, self.world_time.get_day(), self.world_time.get_time()))
 
         # Print the city matrix at every iteration
         homes = []
         workplaces = []
+        metro_stations = []
         for agent in self.population:
             homes.append(agent.home)
             workplaces.append(agent.workplace)
+
+        for publ_trs_type in self.public_transport.keys():
+            if publ_trs_type == "metro":
+                for line in self.public_transport[publ_trs_type].keys():
+                    metro_stations.extend(self.public_transport[publ_trs_type][line].locations)
+
 
         for i, row in enumerate(self.city_matrix):
             for j, num in enumerate(row):
@@ -49,6 +58,8 @@ class City:
                     console.print("[{}]{}".format(home_color, num), end=" ")
                 elif (i, j) in workplaces:
                     console.print("[{}]{}".format(workplace_color, num), end=" ")
+                elif (i, j) in metro_stations:
+                    console.print("[{}]{}".format(metro_stations_color, num), end=" ")
                 else:
                     print(str(num), end=" ")  # Print the number in white
             print()  # new line

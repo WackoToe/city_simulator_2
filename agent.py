@@ -1,7 +1,9 @@
-import numpy as np
 import random
+import numpy as np
+
+from stats import stat_dict
 class Agent:
-    def __init__(self, world_time, home_pos, work_pos, everyday_work_hours, got_car):
+    def __init__(self, world_time, home_pos, work_pos, everyday_work_hours):
         # Initialize the agent's position and status
         self.world_time = world_time
         self.home = (home_pos[0], home_pos[1])
@@ -16,8 +18,12 @@ class Agent:
 
         self.sleeping = False
 
-        self.got_car = got_car
-        self.car_speed = 2
+        # print(home_pos)
+        num = random.uniform(0, 1)
+        num = 0
+        # print(num)
+        self.got_car = num < stat_dict["car_own"]
+        self.car_speed = 5
 
         self.x, self.y = self.home[0], self.home[1]
 
